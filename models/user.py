@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Date
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Date, Time
 from config.database import Base
 from pydantic import BaseModel
 
@@ -44,6 +44,7 @@ class consultas_class_confirmadas(Base):
     Paciente_id= Column(Integer, nullable=False)
     medico_id= Column(Integer, nullable=False)
     fecha_consulta= Column(Date, nullable=False)
+    hora_consulta = Column(Time, nullable=False)
     urgencia= Column(Boolean, default=False)
     confirmada= Column(Boolean, default=False)
 

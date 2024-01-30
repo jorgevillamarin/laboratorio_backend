@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends,HTTPException
-from config.database import SessionLocal
+from config.database import SessionLocal, get_db
 from router.login_token.validacion_token import get_current_user
 from fastapi import Depends
 from router.login_token.validacion import add_user, update_user
@@ -12,10 +12,9 @@ users = APIRouter()
 @users.post("/add_user")
 async def add_user_endpoint(
     username: str,
-    user_password: str,
-    current_user: dict = Depends(get_current_user)
+    user_password: str, db: Session = Depends(get_db)
 ):
-    db = SessionLocal()
+    
     new_user = add_user(db, username, user_password)
     
     return {"message": "Usuario agregado correctamente", "user": new_user}

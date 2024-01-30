@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
 from models.user import MedicosClass, ConsultasClass, Pacientes, consultas_class_confirmadas
 from sqlalchemy import func
+from fastapi import HTTPException
 from datetime import datetime
+from datetime import time
 
 def crear_consulta(db: Session, paciente_id: int, medico_id: int, fecha_consulta_str: str, urgencia: bool):
     fecha_consulta = datetime.strptime(fecha_consulta_str, '%m/%d/%Y').date()
@@ -19,37 +21,42 @@ def obtener_consulta(db: Session, consult_id: int):
     return db.query(ConsultasClass).filter(ConsultasClass.id == consult_id).first()
 
 
-def confirmar_consulta(db: Session, consulta_id: int):
-    consulta = db.query(ConsultasClass).filter(
-        ConsultasClass.id == consulta_id,
-         
-    ).first()
+def confirmar_consulta(db: Session, consulta_id: int, hora_consulta: time, current_user: dict):
+    # Verificar si la consulta existe
+    consulta = db.query(ConsultasClass).filter(ConsultasClass.id == consulta_id).first()
+    if not consulta:
+        raise HTTPException(status_code=404, detail="Consulta no encontrada")
 
-    if consulta:
-        # Aquí asumo que `consultas_class_confirmadas` es la clase correcta que tiene el atributo `confirmada`.
-        nueva_consulta_confirmada = consultas_class_confirmadas(
-            Paciente_id=consulta.paciente_id,
-            medico_id=consulta.medico_id,
-            fecha_consulta=consulta.fecha_consulta,
-            urgencia=consulta.urgencia,
-            confirmada=True
-        )
-        
-        orden = 1 if consulta.urgencia else db.query(func.count(consultas_class_confirmadas.id)).filter(
-            consultas_class_confirmadas.fecha_consulta == consulta.fecha_consulta,
-            consultas_class_confirmadas.urgencia == True,
-            consultas_class_confirmadas.confirmada == True
-        ).scalar() + 1
-        db.add(nueva_consulta_confirmada)
-        db.commit()
-        db.refresh(nueva_consulta_confirmada)
-        db.commit()
-        db.refresh(consulta)
+    # Verificar si el médico o el paciente todavía existen
+    medico_existente = db.query(MedicosClass).filter(MedicosClass.id == consulta.medico_id).first()
+    paciente_existente = db.query(Pacientes).filter(Pacientes.id == consulta.paciente_id).first()
 
-        return nueva_consulta_confirmada
+    if not medico_existente or not paciente_existente:
+        raise HTTPException(status_code=404, detail="Médico o paciente no encontrados")
 
-    return None
+    # Confirmar la consulta
+    consulta.confirmada = True
+    orden = 1 if consulta.urgencia else db.query(func.count(consultas_class_confirmadas.id)).filter(
+        consultas_class_confirmadas.fecha_consulta == consulta.fecha_consulta,
+        consultas_class_confirmadas.urgencia == True,
+        consultas_class_confirmadas.confirmada == True
+    ).scalar() + 1
+    consulta.orden = orden
 
+    # Modificar la consulta_class_confirmada
+    nueva_consulta_confirmada = consultas_class_confirmadas(
+        Paciente_id=consulta.paciente_id,
+        medico_id=consulta.medico_id,
+        fecha_consulta=consulta.fecha_consulta,
+        hora_consulta=hora_consulta,  # Aquí se asigna la hora del parámetro
+        urgencia=consulta.urgencia,
+        confirmada=True,
+        # Agregar otros campos según sea necesario
+    )
+    db.add(nueva_consulta_confirmada)
+    db.commit()
+    db.refresh(consulta)
+    return consulta
 
 def obtener_consultas_confirmadas(db: Session):
     return db.query(consultas_class_confirmadas).all()

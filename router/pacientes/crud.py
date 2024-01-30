@@ -34,3 +34,11 @@ def actualizar_paciente(db: Session, usuario_id: int, usuario: Pacientes_class):
     db.commit()
     db.refresh(db_usuario)
     return db_usuario
+
+def delete_paciente(db: Session, paciente_id: int):
+    user_a_eliminar = db.query(Pacientes).filter(Pacientes.id == paciente_id).first()
+    if user_a_eliminar:
+        db.delete(user_a_eliminar)
+        db.commit()
+        return {"message": "paciente eliminado correctamente"}
+    return {"message": "paciente no encontrado"}
