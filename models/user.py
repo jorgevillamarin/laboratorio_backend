@@ -3,50 +3,35 @@ from config.database import Base
 from pydantic import BaseModel
 
 class Pacientes(Base):
-    __tablename__ = "pacientes"
+    __tablename__ = "Clientes"
     id = Column(Integer, primary_key=True, autoincrement=True)
     full_name = Column(String, index=True)
     id_card = Column(String, index=True)
-    fecha_nacimiento = Column(String, index=True)
-    lugar_nacimiento = Column(String, index=True)
-    phone_number = Column(String, index=True)
+    estatura = Column(Integer, index=True)
     sexo = Column(String, index=True)
     email = Column(String, index=True)
+    membresia = Column(String, index=True)
 
 class Pacientes_class(BaseModel):
     full_name: str
     id_card : str
-    fecha_nacimiento : str
-    lugar_nacimiento : str
-    phone_number : str
+    estatura: int
     sexo: str 
     email : str
+    membresia: str
 
-class MedicosClass(Base):
-    __tablename__ = "medicos"
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-    name = Column(String, index=True, nullable=True)
-    especialidad = Column(String, index=True, nullable=True)
+class Membership(Base):
+    __tablename__ = "memberships"
 
-
-class ConsultasClass(Base):
-    __tablename__ = "consultas"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    paciente_id = Column(Integer, nullable=False)
-    medico_id = Column(Integer, nullable=False)
-    fecha_consulta = Column(Date, nullable=False)
-    urgencia = Column(Boolean, default=False)
+    id = Column(Integer, primary_key=True, index=True)
+    membership_type = Column(String, index=True)
+    duration_days = Column(Integer)
 
 
-class consultas_class_confirmadas(Base):
-    __tablename__ = "consultas confirmadas"
-    id= Column(Integer, primary_key=True, autoincrement=True)
-    Paciente_id= Column(Integer, nullable=False)
-    medico_id= Column(Integer, nullable=False)
-    fecha_consulta= Column(Date, nullable=False)
-    hora_consulta = Column(Time, nullable=False)
-    urgencia= Column(Boolean, default=False)
-    confirmada= Column(Boolean, default=False)
+class MembershipCreate(BaseModel):
+    membership_type: str
+    duration_days: int
+
 
 class users_class(Base):
     __tablename__ = "usuarios"

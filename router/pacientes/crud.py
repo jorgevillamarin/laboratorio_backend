@@ -6,11 +6,10 @@ def crear_paciente(db: Session, usuario: Pacientes_class):
     nuevo_usuario = Pacientes(
         full_name=usuario.full_name,
         id_card=usuario.id_card,
-        fecha_nacimiento=usuario.fecha_nacimiento,
-        lugar_nacimiento=usuario.lugar_nacimiento,
-        phone_number=usuario.phone_number,
+        estatura=usuario.estatura,
         sexo=usuario.sexo,
         email=usuario.email,
+        membresia=usuario.membresia
     )
     db.add(nuevo_usuario)
     db.commit()

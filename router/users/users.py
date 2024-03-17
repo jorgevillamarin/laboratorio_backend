@@ -7,8 +7,7 @@ from sqlalchemy.orm import Session
 from models.user import users_class
 
 users = APIRouter()
-
-
+    
 @users.post("/add_user")
 async def add_user_endpoint(
     username: str,
