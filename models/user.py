@@ -38,3 +38,7 @@ class users_class(Base):
     id= Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, index=True, nullable=True)
     user_password = Column(String, index=True, nullable=True)
+
+class class_login(BaseModel):
+    username:str
+    user_password: str

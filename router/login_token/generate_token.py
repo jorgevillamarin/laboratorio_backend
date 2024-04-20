@@ -34,4 +34,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 expires_delta = timedelta(hours=2)  # Establece la duración del token
 
 token = create_access_token(data={}, expires_delta=expires_delta)
-print(token)
+
+# Imprimir el token en un diccionario JSON
+token_dict = {"accsess": token}
+print(json.dumps(token_dict))
+
