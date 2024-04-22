@@ -16,16 +16,16 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 pacientes_instancia = APIRouter()
 
 @pacientes_instancia.post("/Clientes/" )
-def create_cliente(paciente: Pacientes_class, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+def create_cliente(paciente: Pacientes_class, db: Session = Depends(get_db)):
     return crear_paciente(db, paciente)
 
 @pacientes_instancia.get("/full_Clientes/")
-def read_cliente(db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
+def read_cliente(db: Session = Depends(get_db)):
     return obtener_todos_pacientes(db)
 
-@pacientes_instancia.get("/Pacientes/{paciente_id}")
-def read_cliente(usuario_id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
-    return obtener_paciente(db, usuario_id=usuario_id)
+@pacientes_instancia.get("/Pacientes/{id_card}")
+def read_cliente(id_card: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
+    return obtener_paciente(db, id_card=id_card)
 
 @pacientes_instancia.put("/update_pacientes/{paciente_id}")
 def update_cliente(paciente_id: int, usuario: Pacientes_class, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):

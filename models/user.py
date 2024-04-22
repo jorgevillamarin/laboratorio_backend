@@ -6,23 +6,22 @@ class Pacientes(Base):
     __tablename__ = "Clientes"
     id = Column(Integer, primary_key=True, autoincrement=True)
     full_name = Column(String, index=True)
-    id_card = Column(String, index=True)
-    estatura = Column(Integer, index=True)
-    sexo = Column(String, index=True)
-    email = Column(String, index=True)
+    id_card = Column(Integer, index=True)
+    #estatura = Column(Integer, index=True)
+    #sexo = Column(String, index=True)
+    #email = Column(String, index=True)
     membresia = Column(String, index=True)
 
 class Pacientes_class(BaseModel):
     full_name: str
-    id_card : str
-    estatura: int
-    sexo: str 
-    email : str
+    id_card : int
+    #estatura: int
+    #sexo: str 
+    #email : str
     membresia: str
 
 class Membership(Base):
     __tablename__ = "memberships"
-
     id = Column(Integer, primary_key=True, index=True)
     membership_type = Column(String, index=True)
     duration_days = Column(Integer)

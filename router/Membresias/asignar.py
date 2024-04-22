@@ -14,9 +14,7 @@ def create_membership(membership_data: MembershipCreate, db: Session = Depends(g
 
     new_membership = Membership(
         membership_type=membership_data.membership_type,
-        duration_days=duration_days,
-        start_date=start_date,
-        expiration_date=expiration_date
+        duration_days=duration_days
     )
 
     db.add(new_membership)
@@ -44,8 +42,8 @@ def get_memberships(db: Session = Depends(get_db)):
     return memberships
 
 @Membresia.get("/membership/expiration/")
-def check_membership_expiration(client_id: int, db: Session = Depends(get_db)):
-    client = db.query(Pacientes).filter(Pacientes.id == client_id).first()
+def check_membership_expiration(id_card: int, db: Session = Depends(get_db)):
+    client = db.query(Pacientes).filter(Pacientes.id_card == id_card).first()
     if client is None:
         raise HTTPException(status_code=404, detail="Client not found")
 

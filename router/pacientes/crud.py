@@ -6,9 +6,6 @@ def crear_paciente(db: Session, usuario: Pacientes_class):
     nuevo_usuario = Pacientes(
         full_name=usuario.full_name,
         id_card=usuario.id_card,
-        estatura=usuario.estatura,
-        sexo=usuario.sexo,
-        email=usuario.email,
         membresia=usuario.membresia
     )
     db.add(nuevo_usuario)
@@ -20,8 +17,8 @@ def obtener_todos_pacientes(db: Session):
     return db.query(Pacientes).all()
 
 
-def obtener_paciente(db: Session, usuario_id: int):
-    return db.query(Pacientes).filter(Pacientes.id == usuario_id).first()
+def obtener_paciente(db: Session, id_card: int):
+    return db.query(Pacientes).filter(Pacientes.id_card == id_card).first()
 
 
 def actualizar_paciente(db: Session, usuario_id: int, usuario: Pacientes_class):
